@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.lb</groupId>
+    <artifactId>unicron</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <repositories>
+        <repository>
+            <id>puhuifinance</id>
+            <name>Maven of Puhuifinance.com</name>
+            <url>http://inside.puhuifinance.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java-version>1.8</java-version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <scala.version>2.11.8</scala.version>
+
+    </properties>
+
+    <!-- 多环境构建配置 -->
+    <profiles>
+        <!-- 开发环境配置 -->
+        <profile>
+            <!-- 标识符, 可以通过 -P[id] 来激活 --> <!-- -Pdev -->
+            <id>dev</id>
+            <properties>
+                <environment>dev</environment>
+            </properties>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+                <!-- 默认激活 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!--测试-->
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>test</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <environment>prod</environment>
+            </properties>
+            <!-- 激活条件 -->
+            <activation>
+                <!-- 可以通过 -D[name]=[value] 来激活 --> <!-- -Denv=dev -->
+                <property>
+                    <name>env</name>
+                    <value>prod</value>
+                </property>
+
+            </activation>
+        </profile>
+
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.12</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <!--<version>5.1.46</version>-->
+            <version>5.1.12</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.73</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_${scala.binary.version}</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources-${environment}</directory>
+                <excludes>
+
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java-version}</source>
+                    <target>${java-version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
